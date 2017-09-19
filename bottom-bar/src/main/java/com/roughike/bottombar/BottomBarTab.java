@@ -403,6 +403,11 @@ public class BottomBarTab extends LinearLayout {
         }
     }
 
+    public void hideSelection(boolean animate) {
+        deselect(animate);
+        setSelected(true);
+    }
+
     public void deselect(boolean animate) {
         isActive = false;
 
