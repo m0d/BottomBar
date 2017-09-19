@@ -12,6 +12,13 @@
         android:gravity="center"
         android:text="Hi mom!" />
 
+    <Button
+        android:text="unselect"
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
     <com.roughike.bottombar.BottomBar
         android:id="@+id/bottomBar"
         android:layout_width="match_parent"

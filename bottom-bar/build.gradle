@@ -1,5 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.kt3k.coveralls'
+apply plugin: 'com.github.dcendents.android-maven'
+
+group='com.github.m0d'
 
 ext {
     bintrayRepo = 'maven'
@@ -14,7 +17,7 @@ ext {
     siteUrl = 'https://github.com/roughike/BottomBar'
     gitUrl = 'https://github.com/roughike/BottomBar.git'
 
-    libraryVersion = '2.3.1'
+    libraryVersion = '2.3.1-deselect'
 
     developerId = 'roughike'
     developerName = 'Iiro Krankka'

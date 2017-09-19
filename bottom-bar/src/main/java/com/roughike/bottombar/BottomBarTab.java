@@ -403,7 +403,7 @@ public class BottomBarTab extends LinearLayout {
         }
     }
 
-    void deselect(boolean animate) {
+    public void deselect(boolean animate) {
         isActive = false;
 
         boolean isShifting = type == Type.SHIFTING;
