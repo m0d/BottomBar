@@ -17,6 +17,8 @@
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:layout_alignParentBottom="true"
+        app:bb_sameActiveInactiveIconSize="true"
+        app:bb_sameActiveInactiveWidth="true"
         app:bb_tabXmlResource="@xml/bottombar_tabs_color_changing"
         app:bb_behavior="shifting|underNavbar" />
 
