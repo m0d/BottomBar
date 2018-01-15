@@ -23,4 +23,13 @@ class BatchTabPropertyApplier {
             }
         }
     }
+
+    void applyToChosenTab(@NonNull TabPropertyUpdater propertyUpdater, int index) {
+
+        if (index >= 0 && bottomBar.getTabCount() > 0 && index < bottomBar.getTabCount()) {
+            BottomBarTab tab = bottomBar.getTabAtPosition(index);
+            propertyUpdater.update(tab);
+        }
+
+    }
 }

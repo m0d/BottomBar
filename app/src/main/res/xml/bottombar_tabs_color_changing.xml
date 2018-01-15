@@ -23,6 +23,5 @@
     <tab
         id="@+id/tab_food"
         icon="@drawable/ic_restaurants"
-        title="Food"
         barColorWhenSelected="#FF9800" />
 </tabs>

@@ -82,6 +82,8 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private int titleTextAppearance;
     private Typeface titleTypeFace;
     private boolean showShadow;
+    private boolean sameActiveInactiveWidth;
+    private boolean sameActiveInactiveIconSize;
     private float shadowElevation;
     private View shadowView;
 
@@ -189,7 +191,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         maxFixedItemWidth = MiscUtils.dpToPixel(getContext(), 168);
 
         TypedArray ta = context.getTheme()
-                               .obtainStyledAttributes(attrs, R.styleable.BottomBar, defStyleAttr, defStyleRes);
+                .obtainStyledAttributes(attrs, R.styleable.BottomBar, defStyleAttr, defStyleRes);
 
         try {
             tabXmlResource = ta.getResourceId(R.styleable.BottomBar_bb_tabXmlResource, 0);
@@ -211,6 +213,8 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
             hideBadgeWhenActive = ta.getBoolean(R.styleable.BottomBar_bb_badgesHideWhenActive, true);
             titleTextAppearance = ta.getResourceId(R.styleable.BottomBar_bb_titleTextAppearance, 0);
             titleTypeFace = getTypeFaceFromAsset(ta.getString(R.styleable.BottomBar_bb_titleTypeFace));
+            sameActiveInactiveWidth = ta.getBoolean(R.styleable.BottomBar_bb_sameActiveInactiveWidth, false);
+            sameActiveInactiveIconSize = ta.getBoolean(R.styleable.BottomBar_bb_sameActiveInactiveIconSize, false);
             showShadow = ta.getBoolean(R.styleable.BottomBar_bb_showShadow, true);
         } finally {
             ta.recycle();
@@ -343,7 +347,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
                 type = BottomBarTab.Type.FIXED;
             }
 
-            if (isIconsOnlyMode()) {
+            if (isIconsOnlyMode() || bottomBarTab.getTitle() == null) {
                 bottomBarTab.setIsTitleless(true);
             }
 
@@ -352,7 +356,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
             if (index == currentTabPosition) {
                 bottomBarTab.select(false);
-
                 handleBackgroundColorChange(bottomBarTab, false);
             } else {
                 bottomBarTab.deselect(false);
@@ -392,15 +395,21 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
                 maxFixedItemWidth
         );
 
-        inActiveShiftingItemWidth = (int) (proposedItemWidth * 0.9);
-        activeShiftingItemWidth = (int) (proposedItemWidth + (proposedItemWidth * ((tabsToAdd.length - 1) * 0.1)));
+        if (sameActiveInactiveWidth) {
+            inActiveShiftingItemWidth = proposedItemWidth;
+            activeShiftingItemWidth = proposedItemWidth;
+        } else {
+            inActiveShiftingItemWidth = (int) (proposedItemWidth * 0.9);
+            activeShiftingItemWidth = (int) (proposedItemWidth + (proposedItemWidth * ((tabsToAdd.length - 1) * 0.1)));
+        }
+
         int height = Math.round(getContext().getResources()
-                                            .getDimension(R.dimen.bb_height));
+                .getDimension(R.dimen.bb_height));
 
         for (BottomBarTab tabView : tabsToAdd) {
             ViewGroup.LayoutParams params = tabView.getLayoutParams();
             params.height = height;
-
+            tabView.setIsInactiveActiveIconSameSize(sameActiveInactiveIconSize);
             if (isShiftingMode()) {
                 if (tabView.isActive()) {
                     params.width = activeShiftingItemWidth;
@@ -629,7 +638,115 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     public void setLongPressHintsEnabled(boolean enabled) {
         longPressHintsEnabled = enabled;
     }
+    /**
+     * Set alpha value used for inactive BottomBarTab at $index.
+     */
+    public void setInActiveTabAlpha(float alpha, int index) {
+        inActiveTabAlpha = alpha;
 
+        batchPropertyApplier.applyToChosenTab(new BatchTabPropertyApplier.TabPropertyUpdater() {
+            @Override
+            public void update(BottomBarTab tab) {
+                tab.setInActiveAlpha(inActiveTabAlpha);
+            }
+        }, index);
+    }
+
+    /**
+     * Set alpha value used for active BottomBarTab at $index.
+     */
+    public void setActiveTabAlpha(float alpha, int index) {
+        activeTabAlpha = alpha;
+
+        batchPropertyApplier.applyToChosenTab(new BatchTabPropertyApplier.TabPropertyUpdater() {
+            @Override
+            public void update(BottomBarTab tab) {
+                tab.setActiveAlpha(activeTabAlpha);
+            }
+        }, index);
+    }
+
+    public void setInActiveTabColor(@ColorInt int color, int index) {
+        inActiveTabColor = color;
+
+        batchPropertyApplier.applyToChosenTab(new BatchTabPropertyApplier.TabPropertyUpdater() {
+            @Override
+            public void update(BottomBarTab tab) {
+                tab.setInActiveColor(inActiveTabColor);
+            }
+        }, index);
+    }
+
+    /**
+     * Set active color used for selected BottomBarTab at $index
+     */
+    public void setActiveTabColor(@ColorInt int color,int index) {
+        activeTabColor = color;
+
+        batchPropertyApplier.applyToChosenTab(new BatchTabPropertyApplier.TabPropertyUpdater() {
+            @Override
+            public void update(BottomBarTab tab) {
+                tab.setActiveColor(activeTabColor);
+            }
+        }, index);
+    }
+
+    /**
+     * Set background color for the badge at $index
+     */
+    public void setBadgeBackgroundColor(@ColorInt int color, int index) {
+        badgeBackgroundColor = color;
+
+        batchPropertyApplier.applyToChosenTab(new BatchTabPropertyApplier.TabPropertyUpdater() {
+            @Override
+            public void update(BottomBarTab tab) {
+                tab.setBadgeBackgroundColor(badgeBackgroundColor);
+            }
+        }, index);
+    }
+
+    /**
+     * Controls whether the badge (if any) for active tab at $index
+     * should be hidden or not.
+     */
+    public void setBadgesHideWhenActive(final boolean hideWhenSelected, int index) {
+        hideBadgeWhenActive = hideWhenSelected;
+        batchPropertyApplier.applyToChosenTab(new BatchTabPropertyApplier.TabPropertyUpdater() {
+            @Override
+            public void update(BottomBarTab tab) {
+                tab.setBadgeHidesWhenActive(hideWhenSelected);
+            }
+        }, index);
+    }
+
+    /**
+     * Set custom text apperance for BottomBarTab at $index
+     */
+    public void setTabTitleTextAppearance(int textAppearance, int index) {
+        titleTextAppearance = textAppearance;
+
+        batchPropertyApplier.applyToChosenTab(new BatchTabPropertyApplier.TabPropertyUpdater() {
+            @Override
+            public void update(BottomBarTab tab) {
+                tab.setTitleTextAppearance(titleTextAppearance);
+            }
+        }, index);
+    }
+
+
+    /**
+     * Set a custom typeface for tabs[$index] title.
+     */
+    public void setTabTitleTypeface(Typeface typeface, int index) {
+        titleTypeFace = typeface;
+
+        batchPropertyApplier.applyToChosenTab(new BatchTabPropertyApplier.TabPropertyUpdater() {
+            @Override
+            public void update(BottomBarTab tab) {
+                tab.setTitleTypeface(titleTypeFace);
+            }
+        }, index);
+    }
     /**
      * Set alpha value used for inactive BottomBarTabs.
      */
@@ -935,7 +1052,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
         if (shouldShowHint) {
             Toast.makeText(getContext(), longClickedTab.getTitle(), Toast.LENGTH_SHORT)
-                 .show();
+                    .show();
         }
 
         return true;
@@ -1054,24 +1171,24 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     private void backgroundCrossfadeAnimation(final int newColor) {
         ViewCompat.setAlpha(backgroundOverlay, 0);
         ViewCompat.animate(backgroundOverlay)
-                  .alpha(1)
-                  .setListener(new ViewPropertyAnimatorListenerAdapter() {
-                      @Override
-                      public void onAnimationEnd(View view) {
-                          onEnd();
-                      }
+                .alpha(1)
+                .setListener(new ViewPropertyAnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(View view) {
+                        onEnd();
+                    }
 
-                      @Override
-                      public void onAnimationCancel(View view) {
-                          onEnd();
-                      }
+                    @Override
+                    public void onAnimationCancel(View view) {
+                        onEnd();
+                    }
 
-                      private void onEnd() {
-                          outerContainer.setBackgroundColor(newColor);
-                          backgroundOverlay.setVisibility(View.INVISIBLE);
-                          ViewCompat.setAlpha(backgroundOverlay, 1);
-                      }
-                  })
-                  .start();
+                    private void onEnd() {
+                        outerContainer.setBackgroundColor(newColor);
+                        backgroundOverlay.setVisibility(View.INVISIBLE);
+                        ViewCompat.setAlpha(backgroundOverlay, 1);
+                    }
+                })
+                .start();
     }
 }

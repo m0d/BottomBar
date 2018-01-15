@@ -53,6 +53,7 @@ public class BottomBarTab extends LinearLayout {
 
     private Type type = Type.FIXED;
     private boolean isTitleless;
+    private boolean isInactiveActiveIconSameSize;
     private int iconResId;
     private String title;
     private float inActiveAlpha;
@@ -181,6 +182,10 @@ public class BottomBarTab extends LinearLayout {
         }
 
         this.isTitleless = isTitleless;
+    }
+
+    void setIsInactiveActiveIconSameSize(boolean isInactiveActiveIconSameSize) {
+        this.isInactiveActiveIconSameSize = isInactiveActiveIconSameSize;
     }
 
     public ViewGroup getOuterView() {
@@ -383,15 +388,20 @@ public class BottomBarTab extends LinearLayout {
 
     void select(boolean animate) {
         isActive = true;
-
+        float scale;
+        if(isInactiveActiveIconSameSize){
+            scale = INACTIVE_SHIFTING_TITLELESS_ICON_SCALE;
+        }else{
+            scale = ACTIVE_SHIFTING_TITLELESS_ICON_SCALE;
+        }
         if (animate) {
-            animateIcon(activeAlpha, ACTIVE_SHIFTING_TITLELESS_ICON_SCALE);
+            animateIcon(activeAlpha, scale);
             animateTitle(sixDps, ACTIVE_TITLE_SCALE, activeAlpha);
             animateColors(inActiveColor, activeColor);
         } else {
             setTitleScale(ACTIVE_TITLE_SCALE);
             setTopPadding(sixDps);
-            setIconScale(ACTIVE_SHIFTING_TITLELESS_ICON_SCALE);
+            setIconScale(scale);
             setColors(activeColor);
             setAlphas(activeAlpha);
         }
