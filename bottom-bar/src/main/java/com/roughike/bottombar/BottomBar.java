@@ -356,7 +356,6 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
 
             if (index == currentTabPosition) {
                 bottomBarTab.select(false);
-
                 handleBackgroundColorChange(bottomBarTab, false);
             } else {
                 bottomBarTab.deselect(false);
@@ -410,7 +409,7 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
         for (BottomBarTab tabView : tabsToAdd) {
             ViewGroup.LayoutParams params = tabView.getLayoutParams();
             params.height = height;
-
+            tabView.setIsInactiveActiveIconSameSize(sameActiveInactiveIconSize);
             if (isShiftingMode()) {
                 if (tabView.isActive()) {
                     params.width = activeShiftingItemWidth;
