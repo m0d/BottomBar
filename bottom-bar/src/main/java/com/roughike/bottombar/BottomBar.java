@@ -638,7 +638,115 @@ public class BottomBar extends LinearLayout implements View.OnClickListener, Vie
     public void setLongPressHintsEnabled(boolean enabled) {
         longPressHintsEnabled = enabled;
     }
+    /**
+     * Set alpha value used for inactive BottomBarTab at $index.
+     */
+    public void setInActiveTabAlpha(float alpha, int index) {
+        inActiveTabAlpha = alpha;
 
+        batchPropertyApplier.applyToChosenTab(new BatchTabPropertyApplier.TabPropertyUpdater() {
+            @Override
+            public void update(BottomBarTab tab) {
+                tab.setInActiveAlpha(inActiveTabAlpha);
+            }
+        }, index);
+    }
+
+    /**
+     * Set alpha value used for active BottomBarTab at $index.
+     */
+    public void setActiveTabAlpha(float alpha, int index) {
+        activeTabAlpha = alpha;
+
+        batchPropertyApplier.applyToChosenTab(new BatchTabPropertyApplier.TabPropertyUpdater() {
+            @Override
+            public void update(BottomBarTab tab) {
+                tab.setActiveAlpha(activeTabAlpha);
+            }
+        }, index);
+    }
+
+    public void setInActiveTabColor(@ColorInt int color, int index) {
+        inActiveTabColor = color;
+
+        batchPropertyApplier.applyToChosenTab(new BatchTabPropertyApplier.TabPropertyUpdater() {
+            @Override
+            public void update(BottomBarTab tab) {
+                tab.setInActiveColor(inActiveTabColor);
+            }
+        }, index);
+    }
+
+    /**
+     * Set active color used for selected BottomBarTab at $index
+     */
+    public void setActiveTabColor(@ColorInt int color,int index) {
+        activeTabColor = color;
+
+        batchPropertyApplier.applyToChosenTab(new BatchTabPropertyApplier.TabPropertyUpdater() {
+            @Override
+            public void update(BottomBarTab tab) {
+                tab.setActiveColor(activeTabColor);
+            }
+        }, index);
+    }
+
+    /**
+     * Set background color for the badge at $index
+     */
+    public void setBadgeBackgroundColor(@ColorInt int color, int index) {
+        badgeBackgroundColor = color;
+
+        batchPropertyApplier.applyToChosenTab(new BatchTabPropertyApplier.TabPropertyUpdater() {
+            @Override
+            public void update(BottomBarTab tab) {
+                tab.setBadgeBackgroundColor(badgeBackgroundColor);
+            }
+        }, index);
+    }
+
+    /**
+     * Controls whether the badge (if any) for active tab at $index
+     * should be hidden or not.
+     */
+    public void setBadgesHideWhenActive(final boolean hideWhenSelected, int index) {
+        hideBadgeWhenActive = hideWhenSelected;
+        batchPropertyApplier.applyToChosenTab(new BatchTabPropertyApplier.TabPropertyUpdater() {
+            @Override
+            public void update(BottomBarTab tab) {
+                tab.setBadgeHidesWhenActive(hideWhenSelected);
+            }
+        }, index);
+    }
+
+    /**
+     * Set custom text apperance for BottomBarTab at $index
+     */
+    public void setTabTitleTextAppearance(int textAppearance, int index) {
+        titleTextAppearance = textAppearance;
+
+        batchPropertyApplier.applyToChosenTab(new BatchTabPropertyApplier.TabPropertyUpdater() {
+            @Override
+            public void update(BottomBarTab tab) {
+                tab.setTitleTextAppearance(titleTextAppearance);
+            }
+        }, index);
+    }
+
+
+    /**
+     * Set a custom typeface for tabs[$index] title.
+     */
+    public void setTabTitleTypeface(Typeface typeface, int index) {
+        titleTypeFace = typeface;
+
+        batchPropertyApplier.applyToChosenTab(new BatchTabPropertyApplier.TabPropertyUpdater() {
+            @Override
+            public void update(BottomBarTab tab) {
+                tab.setTitleTypeface(titleTypeFace);
+            }
+        }, index);
+    }
     /**
      * Set alpha value used for inactive BottomBarTabs.
      */
