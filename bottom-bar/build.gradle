@@ -16,7 +16,7 @@ ext {
     siteUrl = 'https://github.com/roughike/BottomBar'
     gitUrl = 'https://github.com/roughike/BottomBar.git'
 
-    libraryVersion = '2.3.1-c'
+    libraryVersion = '2.3.2'
 
     developerId = 'roughike'
     developerName = 'Iiro Krankka'
